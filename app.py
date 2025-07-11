@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect, session, flash
 from pymongo import MongoClient
 import matplotlib.pyplot as plt
 import os
+import sklearn
 import pickle
 import numpy as np
 import pandas as pd
