@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Walmart-Themed Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f9;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+
+        header {
+            background-color:#001E60;
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header h2 {
+            margin: auto;
+            font-size: 20px;
+            text-align: center;
+        }
+        header img{
+            margin:0;
+            height:30px;
+        }
+        header a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            background-color: #FFC220;
+            padding: 6px 12px;
+            border-radius: 4px;
+        }
+
+        h3 {
+            margin: 20px;
+            color: #0071ce;
+        }
+
+        table {
+            width: 95%;
+            margin: 20px auto;
+            border-collapse: collapse;
+            background-color: white;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        th {
+            background-color: #e5f0fb;
+            color: #003087;
+        }
+
+        .surplus {
+            background-color: #d4edda;
+        }
+
+        .less {
+            background-color: #f8d7da;
+        }
+
+        .accordion {
+            background-color: #0071ce;
+            color: white;
+            cursor: pointer;
+            padding: 5px 10px;
+            border: none;
+            outline: none;
+            font-size: 13px;
+            border-radius: 3px;
+            transition: background-color 0.3s ease;
+        }
+
+        .accordion:hover {
+            background-color: #005eb8;
+        }
+
+        .panel {
+            padding: 10px;
+            background-color: #f9f9f9;
+            display: none;
+            text-align: left;
+        }
+
+        form button {
+            background-color: #d9534f;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        form button:hover {
+            background-color: #c9302c;
+        }
+
+        .chart-container {
+            text-align: center;
+            margin: 40px auto;
+        }
+
+        .chart-container img {
+            max-width: 90%;
+            height: auto;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <img src="{{ url_for('static', filename='logo.png') }}" alt="Surplus Pie Chart">
+        <h2>Welcome, Store #{{ store_id }} (Region: {{ region }})</h2>
+        <a href="/logout">Logout</a>
+    </header>
+
+    <h3>Inventory Overview</h3>
+    <table>
+        <tr>
+            <th>Product</th>
+            <th>Category</th>
+            <th>Quantity (kg)</th>
+            <th>Date Added</th>
+            <th>Expiry Date</th>
+            <th>Unit Price</th>
+            <th>Predicted Daily Sale</th>
+            <th>Status</th>
+            <th>Update</th>
+        </tr>
+        {% for item in inventory %}
+        <tr class="{{ item.status }}">
+            <td>
+                <button class="accordion" onclick="togglePanel(this)" data-product="{{ item.product_name }}">
+                    {{ item.product_name }}
+                </button>
+                <div class="panel"></div>
+            </td>
+            <td>{{ item.category }}</td>
+            <td>{{ item.quantity_kg }}</td>
+            <td>{{ item.date_added }}</td>
+            <td>{{ item.expiry_date }}</td>
+            <td>{{ item.unit_price }}</td>
+            <td>{{ item.predicted_daily_sale_kg }}</td>
+            <td>{{ item.status|capitalize }}</td>
+            <td>
+                <form action="/delete_item/{{ item._id }}" method="POST">
+                    <button type="submit">Delete</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <div class="chart-container">
+        <h2>Surplus Items Pie Chart</h2>
+        {% if chart_path %}
+        <img src="{{ url_for('static', filename='surplus_pie.png') }}" alt="Surplus Pie Chart">
+        {% else %}
+        <p>No surplus data available.</p>
+        {% endif %}
+    </div>
+
+    <script>
+        function togglePanel(button) {
+            const panel = button.nextElementSibling;
+            const product = button.dataset.product;
+
+            if (panel.style.display === "block") {
+                panel.style.display = "none";
+                panel.innerHTML = "";
+            } else {
+                fetch(`/get_less_stores?product_name=${encodeURIComponent(product)}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.length === 0) {
+                            panel.innerHTML = "<i>No stores currently need this item.</i>";
+                        } else {
+                            let html = "<ul>";
+                            data.forEach(store => {
+                                html += `<li>${store.label}</li>`;
+                            });
+                            html += "</ul>";
+                            panel.innerHTML = html;
+                        }
+                        panel.style.display = "block";
+                    })
+                    .catch(err => {
+                        panel.innerHTML = "<i>Error fetching data</i>";
+                        panel.style.display = "block";
+                    });
+            }
+        }
+    </script>
+</body>
+
+</html>

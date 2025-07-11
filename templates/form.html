@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Inventory Update Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+
+        form {
+            max-width: 400px;
+            margin: auto;
+            border: 1px solid #ccc;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        label {
+            display: block;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        input[type="date"] {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            box-sizing: border-box;
+        }
+
+        input[type="submit"] {
+            margin-top: 20px;
+            padding: 10px;
+            width: 100%;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h2>Add inventory</h2>
+
+    <form action="/add-inventory" method="POST">
+        <label for="region">Region:</label>
+        <input type="text" id="region" name="region" required>
+        <label for="product_name">Product Name:</label>
+        <input type="text" id="product_name" name="product_name" required>
+        <label for="category">Product Category:</label>
+        <input type="text" id="category" name="category" required>
+        <label for="quantity_kg">Quantity (kg):</label>
+        <input type="number" id="quantity_kg" name="quantity_kg" required>
+        <label for="expiry_date">Expiry date (YYYY-MM-DD): :</label>
+        <input type="date" id="expiry_date" name="expiry_date" required>
+        <label for="unit_price">Unit Price:</label>
+        <input type="decimal" id="unit_price" name="unit_price" required>
+        <label for="local_event">Local Event:</label>
+        <select id="local_event" name="local_event" required>
+            <option value="" disabled selected>Select an option</option>
+            <option value="1">Yes</option>
+            <option value="0">No</option>
+        </select>
+        <label for="temp">Temperature:</label>
+        <input type="decimal" id="temp" name="temp" required>
+        <label for="rainfall">Rainfall:</label>
+        <input type="decimal" id="rainfall" name="rainfall" required>
+        <input type="submit" value="Submit">
+        </form>
+        </body>
+</html>
+

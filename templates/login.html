@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h2>Walmart Store Login</h2>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="flash-message" style="color: 
+                    {% if category == 'danger' %}red
+                    {% elif category == 'success' %}green
+                    {% else %}blue{% endif %};">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <form method="POST">
+        <label for="store_id">Store ID:</label><br>
+        <input type="text" name="store_id" id="store_id" required><br>
+
+        <label for="email">Manager Email:</label><br>
+        <input type="email" name="email" id="email" required><br>
+
+        <label for="pass">Password:</label><br>
+        <input type="password" name="pass" id="pass" required><br>
+
+        <button type="submit">Login</button>
+    </form>
+</body>
+</html>

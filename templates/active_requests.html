@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Active Requests</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            padding: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #f4f4f4;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        .btn {
+            padding: 6px 10px;
+            border: none;
+            cursor: pointer;
+            margin: 2px;
+        }
+
+        .accept {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .reject {
+            background-color: #f44336;
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+    <h2>Active Transfer Requests</h2>
+
+    <table>
+        <tr>
+            <th>Product</th>
+            <th>Quantity (kg)</th>
+            <th>To Store</th>
+            <th>Status</th>
+            <th>Date</th>
+            <th>Action</th>
+        </tr>
+        {% for req in requests %}
+        <tr>
+            <td>{{ req.product_name }}</td>
+            <td>{{ req.quantity_kg }}</td>
+            <td>{{ req.to_store }}</td>
+            <td>{{ req.status }}</td>
+            <td>{{ req.formatted_date if req.formatted_date else 'N/A' }}</td>
+            <td>
+                {% if req.status == "Pending" %}
+                <form method="POST" action="/update-request" style="display:inline;">
+                    <input type="hidden" name="request_id" value="{{ req._id }}">
+                    <button class="btn accept" type="submit" name="action" value="Confirmed">Accept</button>
+                </form>
+                <form method="POST" action="/update-request" style="display:inline;">
+                    <input type="hidden" name="request_id" value="{{ req._id }}">
+                    <button class="btn reject" type="submit" name="action" value="Rejected">Reject</button>
+                </form>
+                {% else %}
+                {{ req.status }}
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+
+</html>

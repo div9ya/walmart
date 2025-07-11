@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Marketplace - Surplus Items</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th,
+        td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        h2 {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <h2>Marketplace: Surplus Inventory from All Stores</h2>
+
+    <table>
+        <tr>
+            <th>Product</th>
+            <th>Category</th>
+            <th>Surplus (kg)</th>
+            <th>Unit Price</th>
+            <th>Total Amount</th>
+            <th>Store Name</th>
+            <th>Region</th>
+            <th colspan="2">Map</th>
+            <th>Add</th>
+        </tr>
+        {% for item in items %}
+        <tr>
+            <td>{{ item.product_name }}</td>
+            <td>{{ item.category }}</td>
+            <td>{{ item.surplus_kg }}</td>
+            <td>{{ item.unit_price }}</td>
+            <td>{{ item.unit_price * item.surplus_kg }}</td>
+            <td>{{ item.store_name }}</td>
+            <td>{{ item.region }}</td>
+            <td colspan="2">
+                {% if item.lat != "N/A" and item.lng != "N/A" %}
+                <a href="https://www.google.com/maps?q={{ item.lat }},{{ item.lng }}">
+                    <button type="button">View on Map</button>
+                </a>
+                {% else %}
+                Not Available
+                {% endif %}
+            </td>
+
+            <td>
+                {% set match_request = None %}
+                {% for req in requests %}
+                {% if req.product_name == item.product_name and req.to_store == item.store_id %}
+                {% set match_request = req %}
+                {% endif %}
+                {% endfor %}
+
+                {% if match_request %}
+                <strong>{{ match_request.status }}</strong>
+                {% else %}
+                <form method="POST" action="/request-transfer">
+                    <input type="hidden" name="inventory_id" value="{{ item._id }}">
+                    <input type="hidden" name="from_store" value="{{ item.store_id }}">
+                    <input type="number" name="quantity" value="{{ item.surplus_kg }}" min="1"
+                        max="{{ item.surplus_kg }}" step="0.01">
+                    <button type="submit">Request</button>
+                </form>
+                {% endif %}
+            </td>
+
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+
+</html>
