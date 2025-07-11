@@ -4,4 +4,4 @@ dnspython==2.6.1
 matplotlib
 pandas
 scikit-learn==1.6.1
-xgboost
+xgboost==2.0.3

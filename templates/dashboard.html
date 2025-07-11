@@ -5,44 +5,84 @@
     <meta charset="UTF-8">
     <title>Walmart-Themed Dashboard</title>
     <style>
+        :root {
+            --primary-color: #001E60;
+            --accent-color: #FFC220;
+            --text-color: #333;
+            --light-bg: #f4f6f9;
+            --table-header-bg: #e5f0fb;
+            --table-header-text: #003087;
+            --success-bg: #d4edda;
+            --danger-bg: #f8d7da;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f6f9;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--light-bg);
             margin: 0;
             padding: 0;
-            color: #333;
+            color: var(--text-color);
         }
 
         header {
-            background-color:#001E60;
+            background-color: var(--primary-color);
             color: white;
-            padding: 15px 20px;
+            padding: 15px 30px;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
         header h2 {
-            margin: auto;
-            font-size: 20px;
+            flex-grow: 1;
             text-align: center;
-        }
-        header img{
-            margin:0;
-            height:30px;
-        }
-        header a {
-            color: white;
-            text-decoration: none;
-            font-weight: bold;
-            background-color: #FFC220;
-            padding: 6px 12px;
-            border-radius: 4px;
+            font-size: 20px;
         }
 
+        header img {
+            height: 30px;
+        }
+
+        header a {
+            color: var(--primary-color);
+            background-color: var(--accent-color);
+            text-decoration: none;
+            font-weight: bold;
+            padding: 8px 16px;
+            border-radius: 6px;
+            transition: background-color 0.3s ease;
+        }
+
+        header a:hover {
+            background-color: #e0a800;
+        }
+
+        .profile-section {
+            text-align: center;
+            margin: 30px auto;
+        }
+
+        .profile-section img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: 3px solid var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .profile-section h2 {
+            color: var(--primary-color);
+        }
+
+        h2,
         h3 {
-            margin: 20px;
-            color: #0071ce;
+            text-align: center;
+            color: var(--primary-color);
+            margin: 30px 0 10px;
         }
 
         table {
@@ -50,39 +90,40 @@
             margin: 20px auto;
             border-collapse: collapse;
             background-color: white;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.08);
+            border-radius: 8px;
+            overflow: hidden;
         }
 
         th,
         td {
+            padding: 12px 15px;
             border: 1px solid #ddd;
-            padding: 10px;
             text-align: center;
             font-size: 14px;
         }
 
         th {
-            background-color: #e5f0fb;
-            color: #003087;
+            background-color: var(--table-header-bg);
+            color: var(--table-header-text);
         }
 
         .surplus {
-            background-color: #d4edda;
+            background-color: var(--success-bg);
         }
 
         .less {
-            background-color: #f8d7da;
+            background-color: var(--danger-bg);
         }
 
         .accordion {
             background-color: #0071ce;
             color: white;
-            cursor: pointer;
-            padding: 5px 10px;
             border: none;
-            outline: none;
-            font-size: 13px;
-            border-radius: 3px;
+            padding: 8px 14px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
             transition: background-color 0.3s ease;
         }
 
@@ -91,9 +132,9 @@
         }
 
         .panel {
-            padding: 10px;
-            background-color: #f9f9f9;
             display: none;
+            background-color: #f9f9f9;
+            padding: 10px;
             text-align: left;
         }
 
@@ -101,33 +142,88 @@
             background-color: #d9534f;
             color: white;
             border: none;
-            padding: 5px 10px;
-            border-radius: 3px;
+            padding: 6px 12px;
+            border-radius: 4px;
             cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s ease;
         }
 
         form button:hover {
             background-color: #c9302c;
         }
 
-        .chart-container {
-            text-align: center;
+        .charts-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 30px;
             margin: 40px auto;
+            width: 90%;
         }
 
-        .chart-container img {
-            max-width: 90%;
+        .chart-container {
+            background-color: white;
+            flex: 1 1 400px;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .chart-container ul {
+            list-style-type: none;
+            padding-left: 0;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+
+        .chart-container ul li {
+            padding: 4px 0;
+        }
+
+        .chart-container img,
+        .chart-container canvas {
+            max-width: 100%;
             height: auto;
+            margin-top: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .charts-grid {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            table,
+            th,
+            td {
+                font-size: 12px;
+            }
+
+            header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            header h2 {
+                margin: 10px 0;
+            }
         }
     </style>
 </head>
 
 <body>
     <header>
-        <img src="{{ url_for('static', filename='logo.png') }}" alt="Surplus Pie Chart">
+        <img src="{{ url_for('static', filename='logo.png') }}" alt="Walmart Logo">
         <h2>Welcome, Store #{{ store_id }} (Region: {{ region }})</h2>
         <a href="/logout">Logout</a>
     </header>
+
+    <div class="profile-section">
+        <img src="{{ url_for('static', filename='profile.jpg') }}" alt="Profile Photo">
+        <h2>Welcome Shop 301</h2>
+    </div>
 
     <h3>Inventory Overview</h3>
     <table>
@@ -166,16 +262,175 @@
         {% endfor %}
     </table>
 
-    <div class="chart-container">
-        <h2>Surplus Items Pie Chart</h2>
-        {% if chart_path %}
-        <img src="{{ url_for('static', filename='surplus_pie.png') }}" alt="Surplus Pie Chart">
-        {% else %}
-        <p>No surplus data available.</p>
-        {% endif %}
+    <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 30px; margin: 30px auto; width: 90%;">
+
+        <!-- Add Inventory Card -->
+        <div
+            style="flex: 1 1 400px; background-color: #004494; padding: 20px; border-radius: 10px; text-align: center;">
+            <h2 style="color: #ffc220; margin-bottom: 10px;">Add Inventory</h2>
+            <p style="color: #eee; font-size: 14px; margin-bottom: 20px;">
+                Add new stock entries to your store's inventory.
+            </p>
+            <a href="/add-inventory" style="
+      display: inline-block;
+      padding: 12px 25px;
+      background-color: #ffc220;
+      color: #002f6c;
+      font-weight: bold;
+      text-decoration: none;
+      border-radius: 30px;
+      transition: background 0.3s, transform 0.3s;
+    " onmouseover="this.style.background='#ffb700'; this.style.transform='scale(1.05)';"
+                onmouseout="this.style.background='#ffc220'; this.style.transform='scale(1)';">
+                ➕ Add Inventory
+            </a>
+        </div>
+
+        <!-- Active Requests Card -->
+        <div
+            style="flex: 1 1 400px; background-color: #0071ce; padding: 20px; border-radius: 10px; text-align: center;">
+            <h2 style="color: #ffc220; margin-bottom: 10px;">Active Requests</h2>
+            <p style="color: #eee; font-size: 14px; margin-bottom: 20px;">
+                Monitor all your store's outgoing and incoming transfer requests in real-time.
+            </p>
+            <a href="/active-requests" style="
+      display: inline-block;
+      padding: 12px 25px;
+      background-color: #ffc220;
+      color: #002f6c;
+      font-weight: bold;
+      text-decoration: none;
+      border-radius: 30px;
+      transition: background 0.3s, transform 0.3s;
+    " onmouseover="this.style.background='#ffb700'; this.style.transform='scale(1.05)';"
+                onmouseout="this.style.background='#ffc220'; this.style.transform='scale(1)';">
+                📦 View Active Requests
+            </a>
+        </div>
+
     </div>
 
+
+    <div class="charts-grid">
+        <div class="chart-container">
+            <h2>Surplus Items Pie Chart</h2>
+            {% if chart_path %}
+            <img src="{{ url_for('static', filename='surplus_pie.png') }}" alt="Surplus Pie Chart">
+            {% else %}
+            <p>No surplus data available.</p>
+            {% endif %}
+        </div>
+
+        <div class="chart-container">
+            <h2>Top Products by Quantity</h2>
+            <ul>
+                {% for product in top_products %}
+                <li><strong>{{ product.product_name }}</strong>: {{ product.quantity_kg }} kg</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="chart-container">
+            <h2>Predicted Daily Sales vs Product</h2>
+            <canvas id="salesChart"></canvas>
+        </div>
+
+        <div class="chart-container">
+            <h2>Stock vs Surplus by Product</h2>
+            <canvas id="stockSurplusChart"></canvas>
+        </div>
+
+        <div class="chart-container">
+            <h2>Items Expiring Soon</h2>
+            <ul>
+                {% for item in expiring_soon %}
+                <li><strong>{{ item.product_name }}</strong> - Expiry: {{ item.expiry_date }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+    </div>
+
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
+        // 📊 Predicted Daily Sales Chart
+        const ctxSales = document.getElementById('salesChart').getContext('2d');
+        new Chart(ctxSales, {
+            type: 'bar',
+            data: {
+                labels: {{ predicted_sales_chart | map(attribute = 0) | list | tojson }},
+            datasets: [{
+                label: 'Predicted Daily Sale (kg)',
+                data: {{ predicted_sales_chart | map(attribute = 1) | list | tojson }},
+            backgroundColor: 'rgba(0, 113, 206, 0.7)',
+            borderRadius: 4
+            }]
+        },
+            options: {
+            responsive: true,
+            plugins: {
+                legend: { display: false }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: { display: true, text: 'Kg' }
+                },
+                x: {
+                    title: { display: true, text: 'Product' }
+                }
+            }
+        }
+    });
+
+        // 📊 Stock vs Surplus Chart
+        const ctxStock = document.getElementById('stockSurplusChart').getContext('2d');
+        new Chart(ctxStock, {
+            type: 'bar',
+            data: {
+                labels: {{ stock_vs_surplus_labels | tojson }},
+            datasets: [
+            {
+                label: 'Stock (kg)',
+                data: {{ stock_data | tojson }},
+            backgroundColor: 'rgba(54, 162, 235, 0.7)'
+                },
+            {
+                label: 'Surplus (kg)',
+                data: {{ surplus_data | tojson }},
+            backgroundColor: 'rgba(255, 99, 132, 0.7)'
+                }
+        ]
+        },
+            options: {
+            responsive: true,
+            plugins: {
+                title: {
+                    display: false
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Quantity (kg)'
+                    }
+                },
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Product'
+                    }
+                }
+            }
+        }
+    });
+
+        // 🔄 Toggle Panel for Accordion
         function togglePanel(button) {
             const panel = button.nextElementSibling;
             const product = button.dataset.product;
@@ -206,6 +461,7 @@
             }
         }
     </script>
+
 </body>
 
 </html>

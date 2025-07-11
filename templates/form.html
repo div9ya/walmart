@@ -2,82 +2,156 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <title>Inventory Update Form</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            padding: 20px;
-        }
+  <meta charset="UTF-8">
+  <title>Add Inventory</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: 'Roboto', sans-serif;
+      margin: 0;
+      padding: 0;
+    }
 
-        form {
-            max-width: 400px;
-            margin: auto;
-            border: 1px solid #ccc;
-            padding: 20px;
-            border-radius: 10px;
-        }
+    body {
+      background: linear-gradient(135deg, #001e60, #003087);
+      color: #fff;
+      min-height: 100vh;
+    }
 
-        label {
-            display: block;
-            margin-top: 15px;
-            font-weight: bold;
-        }
+    nav {
+      background-color: #ffc220;
+      padding: 18px 30px;
+      text-align: center;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
 
-        input[type="text"],
-        input[type="number"],
-        input[type="date"] {
-            width: 100%;
-            padding: 8px;
-            margin-top: 5px;
-            box-sizing: border-box;
-        }
+    nav h2 {
+      font-size: 26px;
+      color: #002f6c;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
 
-        input[type="submit"] {
-            margin-top: 20px;
-            padding: 10px;
-            width: 100%;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
+    .container {
+      max-width: 600px;
+      margin: 50px auto;
+      background-color: rgba(255, 255, 255, 0.05);
+      padding: 35px;
+      border-radius: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(8px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+    }
 
-        input[type="submit"]:hover {
-            background-color: #45a049;
-        }
-    </style>
+    label {
+      display: block;
+      margin-top: 16px;
+      font-weight: 500;
+      color: #ffc220;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    input[type="decimal"],
+    input[type="date"],
+    select {
+      width: 100%;
+      padding: 12px;
+      margin-top: 6px;
+      border-radius: 10px;
+      border: none;
+      background-color: rgba(255, 255, 255, 0.08);
+      color: #fff;
+      font-size: 14px;
+    }
+
+    input[type="text"]::placeholder,
+    input[type="number"]::placeholder,
+    input[type="decimal"]::placeholder,
+    input[type="date"]::placeholder {
+      color: #ccc;
+    }
+
+    select {
+      background-color: rgba(255, 255, 255, 0.08);
+    }
+
+    input[type="submit"] {
+      margin-top: 30px;
+      width: 100%;
+      padding: 14px;
+      font-size: 16px;
+      font-weight: bold;
+      background-color: #ffc220;
+      color: #002f6c;
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: background 0.3s ease, transform 0.3s;
+    }
+
+    input[type="submit"]:hover {
+      background-color: #ffb700;
+      transform: scale(1.03);
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        margin: 30px 20px;
+        padding: 25px;
+      }
+
+      nav h2 {
+        font-size: 22px;
+      }
+    }
+  </style>
 </head>
 
 <body>
 
-    <h2>Add inventory</h2>
+  <nav>
+    <h2>Add Inventory</h2>
+  </nav>
 
+  <div class="container">
     <form action="/add-inventory" method="POST">
-        <label for="region">Region:</label>
-        <input type="text" id="region" name="region" required>
-        <label for="product_name">Product Name:</label>
-        <input type="text" id="product_name" name="product_name" required>
-        <label for="category">Product Category:</label>
-        <input type="text" id="category" name="category" required>
-        <label for="quantity_kg">Quantity (kg):</label>
-        <input type="number" id="quantity_kg" name="quantity_kg" required>
-        <label for="expiry_date">Expiry date (YYYY-MM-DD): :</label>
-        <input type="date" id="expiry_date" name="expiry_date" required>
-        <label for="unit_price">Unit Price:</label>
-        <input type="decimal" id="unit_price" name="unit_price" required>
-        <label for="local_event">Local Event:</label>
-        <select id="local_event" name="local_event" required>
-            <option value="" disabled selected>Select an option</option>
-            <option value="1">Yes</option>
-            <option value="0">No</option>
-        </select>
-        <label for="temp">Temperature:</label>
-        <input type="decimal" id="temp" name="temp" required>
-        <label for="rainfall">Rainfall:</label>
-        <input type="decimal" id="rainfall" name="rainfall" required>
-        <input type="submit" value="Submit">
-        </form>
-        </body>
-</html>
+      <label for="region">Region:</label>
+      <input type="text" id="region" name="region" placeholder="e.g. North Zone" required>
 
+      <label for="product_name">Product Name:</label>
+      <input type="text" id="product_name" name="product_name" placeholder="e.g. Tomatoes" required>
+
+      <label for="category">Product Category:</label>
+      <input type="text" id="category" name="category" placeholder="e.g. Vegetables" required>
+
+      <label for="quantity_kg">Quantity (kg):</label>
+      <input type="number" id="quantity_kg" name="quantity_kg" required>
+
+      <label for="expiry_date">Expiry Date:</label>
+      <input type="date" id="expiry_date" name="expiry_date" required>
+
+      <label for="unit_price">Unit Price (₹):</label>
+      <input type="decimal" id="unit_price" name="unit_price" required>
+
+      <label for="local_event">Local Event:</label>
+      <select id="local_event" name="local_event" required>
+        <option value="" disabled selected>Select</option>
+        <option value="1">Yes</option>
+        <option value="0">No</option>
+      </select>
+
+      <label for="temp">Temperature (°C):</label>
+      <input type="decimal" id="temp" name="temp" required>
+
+      <label for="rainfall">Rainfall (mm):</label>
+      <input type="decimal" id="rainfall" name="rainfall" required>
+
+      <input type="submit" value="Add Inventory">
+    </form>
+  </div>
+
+</body>
+
+</html>

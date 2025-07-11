@@ -2,89 +2,146 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <title>Active Requests</title>
-    <style>
-        body {
-            font-family: sans-serif;
-            padding: 20px;
-        }
+  <meta charset="UTF-8">
+  <title>Active Requests</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Roboto', sans-serif;
+    }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
+    body {
+      background: linear-gradient(135deg, #001e60, #003087);
+      padding: 40px;
+      color: #fff;
+    }
 
-        th, td {
-            border: 1px solid #ccc;
-            padding: 10px;
-            text-align: center;
-        }
+    h2 {
+      font-size: 28px;
+      margin-bottom: 30px;
+      color: #ffc220;
+      border-left: 6px solid #ffc220;
+      padding-left: 15px;
+      text-shadow: 0 0 8px #002f6c;
+    }
 
-        th {
-            background-color: #f4f4f4;
-        }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(6px);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+    }
 
-        tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
+    th, td {
+      padding: 14px 16px;
+      text-align: center;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      color: #fff;
+    }
 
-        .btn {
-            padding: 6px 10px;
-            border: none;
-            cursor: pointer;
-            margin: 2px;
-        }
+    th {
+      background-color: #002f6c;
+      color: #ffc220;
+      text-transform: uppercase;
+      font-size: 13px;
+      letter-spacing: 0.5px;
+    }
 
-        .accept {
-            background-color: #4CAF50;
-            color: white;
-        }
+    tr:nth-child(even) {
+      background-color: rgba(255, 255, 255, 0.03);
+    }
 
-        .reject {
-            background-color: #f44336;
-            color: white;
-        }
-    </style>
+    tr:hover {
+      background-color: rgba(0, 113, 206, 0.15);
+    }
+
+    .btn {
+      padding: 8px 14px;
+      border: none;
+      font-weight: 600;
+      font-size: 14px;
+      border-radius: 25px;
+      cursor: pointer;
+      transition: 0.3s ease;
+    }
+
+    .accept {
+      background-color: #ffc220;
+      color: #002f6c;
+    }
+
+    .accept:hover {
+      background-color: #ffb700;
+    }
+
+    .reject {
+      background-color: #d62828;
+      color: white;
+    }
+
+    .reject:hover {
+      background-color: #a41f1f;
+    }
+
+    @media (max-width: 768px) {
+      body {
+        padding: 20px;
+      }
+
+      table, th, td {
+        font-size: 14px;
+      }
+
+      .btn {
+        font-size: 12px;
+        padding: 6px 10px;
+      }
+    }
+  </style>
 </head>
 
 <body>
-    <h2>Active Transfer Requests</h2>
+  <h2>📦 Active Transfer Requests</h2>
 
-    <table>
-        <tr>
-            <th>Product</th>
-            <th>Quantity (kg)</th>
-            <th>To Store</th>
-            <th>Status</th>
-            <th>Date</th>
-            <th>Action</th>
-        </tr>
-        {% for req in requests %}
-        <tr>
-            <td>{{ req.product_name }}</td>
-            <td>{{ req.quantity_kg }}</td>
-            <td>{{ req.to_store }}</td>
-            <td>{{ req.status }}</td>
-            <td>{{ req.formatted_date if req.formatted_date else 'N/A' }}</td>
-            <td>
-                {% if req.status == "Pending" %}
-                <form method="POST" action="/update-request" style="display:inline;">
-                    <input type="hidden" name="request_id" value="{{ req._id }}">
-                    <button class="btn accept" type="submit" name="action" value="Confirmed">Accept</button>
-                </form>
-                <form method="POST" action="/update-request" style="display:inline;">
-                    <input type="hidden" name="request_id" value="{{ req._id }}">
-                    <button class="btn reject" type="submit" name="action" value="Rejected">Reject</button>
-                </form>
-                {% else %}
-                {{ req.status }}
-                {% endif %}
-            </td>
-        </tr>
-        {% endfor %}
-    </table>
+  <table>
+    <tr>
+      <th>Product</th>
+      <th>Quantity (kg)</th>
+      <th>To Store</th>
+      <th>Status</th>
+      <th>Date</th>
+      <th>Action</th>
+    </tr>
+    {% for req in requests %}
+    <tr>
+      <td>{{ req.product_name }}</td>
+      <td>{{ req.quantity_kg }}</td>
+      <td>{{ req.to_store }}</td>
+      <td>{{ req.status }}</td>
+      <td>{{ req.formatted_date if req.formatted_date else 'N/A' }}</td>
+      <td>
+        {% if req.status == "Pending" %}
+        <form method="POST" action="/update-request" style="display:inline;">
+          <input type="hidden" name="request_id" value="{{ req._id }}">
+          <button class="btn accept" type="submit" name="action" value="Confirmed">Accept</button>
+        </form>
+        <form method="POST" action="/update-request" style="display:inline;">
+          <input type="hidden" name="request_id" value="{{ req._id }}">
+          <button class="btn reject" type="submit" name="action" value="Rejected">Reject</button>
+        </form>
+        {% else %}
+        <span style="font-weight: 600;">{{ req.status }}</span>
+        {% endif %}
+      </td>
+    </tr>
+    {% endfor %}
+  </table>
 </body>
 
 </html>

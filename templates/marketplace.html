@@ -2,90 +2,194 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <title>Marketplace - Surplus Items</title>
-    <style>
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
+  <meta charset="UTF-8" />
+  <title>Marketplace - Surplus Items</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Roboto', sans-serif;
+    }
 
-        th,
-        td {
-            border: 1px solid #ccc;
-            padding: 8px;
-            text-align: center;
-        }
+    body {
+      background: linear-gradient(to bottom right, #001e60, #003087);
+      padding: 40px 20px;
+      color: #fff;
+    }
 
-        th {
-            background-color: #f2f2f2;
-        }
+    .marketplace-header {
+      text-align: center;
+      margin-bottom: 40px;
+      position: relative;
+    }
 
-        h2 {
-            margin-top: 20px;
-        }
-    </style>
+    .marketplace-header h2 {
+      font-size: 2.8rem;
+      color: #ffc220;
+      text-shadow: 0 0 12px #002f6c;
+    }
+
+    .marketplace-header p {
+      font-size: 1.1rem;
+      color: #e0e0e0;
+      margin-top: 10px;
+    }
+
+    .table-wrapper {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background-color: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(6px);
+      border-radius: 12px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+      overflow: hidden;
+    }
+
+    th, td {
+      padding: 16px 14px;
+      text-align: center;
+      color: #fff;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    th {
+      background-color: #0071ce;
+      color: #fff;
+      text-transform: uppercase;
+      font-weight: bold;
+      font-size: 13px;
+    }
+
+    tr:nth-child(even) {
+      background-color: rgba(255, 255, 255, 0.03);
+    }
+
+    tr:hover {
+      background-color: rgba(255, 255, 255, 0.08);
+    }
+
+    button,
+    input[type="number"] {
+      padding: 8px 10px;
+      font-size: 14px;
+      border: none;
+      border-radius: 6px;
+      margin-top: 4px;
+    }
+
+    input[type="number"] {
+      width: 80px;
+      background: #fff;
+      color: #000;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      background-color: #ffc220;
+      color: #002f6c;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #e5ac00;
+    }
+
+    .status {
+      font-weight: bold;
+      color: #00e676;
+    }
+
+    .map-button {
+      background-color: #ff6f00;
+      color: #fff;
+    }
+
+    .map-button:hover {
+      background-color: #e65c00;
+    }
+
+    @media (max-width: 768px) {
+      th, td {
+        font-size: 12px;
+        padding: 10px;
+      }
+
+      .marketplace-header h2 {
+        font-size: 2rem;
+      }
+    }
+  </style>
 </head>
 
 <body>
-    <h2>Marketplace: Surplus Inventory from All Stores</h2>
+  <div class="marketplace-header">
+    <h2><i class="fas fa-store"></i> Surplus Inventory Marketplace</h2>
+    <p>Browse surplus items from other stores and request transfers easily.</p>
+  </div>
 
+  <div class="table-wrapper">
     <table>
-        <tr>
-            <th>Product</th>
-            <th>Category</th>
-            <th>Surplus (kg)</th>
-            <th>Unit Price</th>
-            <th>Total Amount</th>
-            <th>Store Name</th>
-            <th>Region</th>
-            <th colspan="2">Map</th>
-            <th>Add</th>
-        </tr>
-        {% for item in items %}
-        <tr>
-            <td>{{ item.product_name }}</td>
-            <td>{{ item.category }}</td>
-            <td>{{ item.surplus_kg }}</td>
-            <td>{{ item.unit_price }}</td>
-            <td>{{ item.unit_price * item.surplus_kg }}</td>
-            <td>{{ item.store_name }}</td>
-            <td>{{ item.region }}</td>
-            <td colspan="2">
-                {% if item.lat != "N/A" and item.lng != "N/A" %}
-                <a href="https://www.google.com/maps?q={{ item.lat }},{{ item.lng }}">
-                    <button type="button">View on Map</button>
-                </a>
-                {% else %}
-                Not Available
-                {% endif %}
-            </td>
+      <tr>
+        <th>Product</th>
+        <th>Category</th>
+        <th>Surplus (kg)</th>
+        <th>Unit Price</th>
+        <th>Total</th>
+        <th>Store</th>
+        <th>Region</th>
+        <th>Map</th>
+        <th>Action</th>
+      </tr>
 
-            <td>
-                {% set match_request = None %}
-                {% for req in requests %}
-                {% if req.product_name == item.product_name and req.to_store == item.store_id %}
-                {% set match_request = req %}
-                {% endif %}
-                {% endfor %}
+      {% for item in items %}
+      <tr>
+        <td>{{ item.product_name }}</td>
+        <td>{{ item.category }}</td>
+        <td>{{ item.surplus_kg }}</td>
+        <td>₹{{ item.unit_price }}</td>
+        <td>₹{{ item.unit_price * item.surplus_kg }}</td>
+        <td>{{ item.store_name }}</td>
+        <td>{{ item.region }}</td>
+        <td>
+          {% if item.lat != "N/A" and item.lng != "N/A" %}
+          <a href="https://www.google.com/maps?q={{ item.lat }},{{ item.lng }}" target="_blank">
+            <button class="map-button">View</button>
+          </a>
+          {% else %}
+          <span style="color: #ccc;">N/A</span>
+          {% endif %}
+        </td>
+        <td>
+          {% set match_request = None %}
+          {% for req in requests %}
+          {% if req.product_name == item.product_name and req.to_store == item.store_id %}
+          {% set match_request = req %}
+          {% endif %}
+          {% endfor %}
 
-                {% if match_request %}
-                <strong>{{ match_request.status }}</strong>
-                {% else %}
-                <form method="POST" action="/request-transfer">
-                    <input type="hidden" name="inventory_id" value="{{ item._id }}">
-                    <input type="hidden" name="from_store" value="{{ item.store_id }}">
-                    <input type="number" name="quantity" value="{{ item.surplus_kg }}" min="1"
-                        max="{{ item.surplus_kg }}" step="0.01">
-                    <button type="submit">Request</button>
-                </form>
-                {% endif %}
-            </td>
-
-        </tr>
-        {% endfor %}
+          {% if match_request %}
+          <span class="status">{{ match_request.status }}</span>
+          {% else %}
+          <form method="POST" action="/request-transfer">
+            <input type="hidden" name="inventory_id" value="{{ item._id }}">
+            <input type="hidden" name="from_store" value="{{ item.store_id }}">
+            <input type="number" name="quantity" value="{{ item.surplus_kg }}" min="1" max="{{ item.surplus_kg }}" step="0.01">
+            <button type="submit">Request</button>
+          </form>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
     </table>
+  </div>
 </body>
 
 </html>

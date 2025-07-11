@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>LocalLoop - Walmart Surplus Exchange</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; font-family:'Roboto', sans-serif; }
+    body { background: #001E60; color:#fff; overflow-x:hidden; }
+
+    #bg-waves {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  background: linear-gradient(135deg, #001E60 0%, #003087 100%);
+  overflow: hidden;
+}
+
+#bg-waves::before,
+#bg-waves::after {
+  content: '';
+  position: absolute;
+  width: 150%;
+  height: 200%;
+  top: -50%;
+  left: -50%;
+  background: radial-gradient(circle at 25% 25%, rgba(255, 194, 32, 0.12), transparent 70%),
+              radial-gradient(circle at 75% 75%, rgba(0, 113, 206, 0.12), transparent 70%);
+  animation: moveWaves 40s linear infinite;
+  z-index: -1;
+}
+
+#bg-waves::after {
+  animation-delay: -20s;
+  transform: scaleX(-1);
+}
+
+@keyframes moveWaves {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+    .hero {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 60px 20px;
+      height: 90vh;
+      text-align: left;
+    }
+
+    .hero-content {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      max-width: 1200px;
+      width: 100%;
+      gap: 40px;
+    }
+
+    .hero-text {
+      flex: 1 1 500px;
+    }
+
+    .hero-text h1 {
+      font-size: 3rem;
+      color: #ffd100;
+      margin-bottom: 20px;
+      text-shadow: 0 0 10px #0071ce;
+    }
+
+    .hero-text p {
+      font-size: 1.3rem;
+      color: #ccc;
+      margin-bottom: 30px;
+      max-width: 600px;
+    }
+
+    .hero .buttons a {
+      padding: 12px 24px;
+      background-color: #0071ce;
+      color: white;
+      border: none;
+      border-radius: 25px;
+      font-size: 1rem;
+      text-decoration: none;
+      transition: background 0.3s, transform 0.3s;
+    }
+
+    .hero .buttons a:hover {
+      background-color: #005fba;
+      transform: scale(1.05);
+    }
+
+    .hero-logo {
+      flex: 1 1 300px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .hero-logo img {
+      max-width: 100%;
+      height: auto;
+    }
+
+    header {
+      display:flex; justify-content:space-between; align-items:center;
+      padding:15px 30px; background:rgba(0,47,108,0.8);
+    }
+    header img { height:40px; }
+    header nav a {
+      margin:0 15px; position:relative;
+      color:#fff; text-decoration:none; font-weight:600;
+    }
+    header nav a::after {
+      content:''; position:absolute; width:0; height:2px; left:0; bottom:-5px;
+      background:#ffc220; transition:0.3s;
+    }
+    header nav a:hover::after { width:100%; }
+
+    .features {
+      position:relative;
+      padding:60px 20px;
+      background:#003087;
+      overflow:hidden;
+      text-align: center;
+    }
+
+    .features h2 {
+      font-size: 2.2rem;
+      color: #ffc220;
+      margin-bottom: 40px;
+    }
+
+    .feature-grid {
+      display:flex;
+      flex-wrap:wrap;
+      justify-content:center;
+      gap:30px;
+    }
+
+    .feature-item {
+      background: rgba(255,255,255,0.05);
+      padding: 35px;
+      border-radius: 15px;
+      max-width: 300px;
+      height:200px;
+      width: 100%;
+      text-align: left;
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,0.15);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+      transition: transform 0.3s;
+      opacity: 0;
+      transform: translateY(50px);
+      animation: fadeUp 1s forwards;
+    }
+
+    .feature-item:nth-child(1) { animation-delay: 0.2s; }
+    .feature-item:nth-child(2) { animation-delay: 0.4s; }
+    .feature-item:nth-child(3) { animation-delay: 0.6s; }
+    .feature-item:nth-child(4) { animation-delay: 0.8s; }
+
+    @keyframes fadeUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .feature-item:hover {
+      transform: translateY(-5px);
+    }
+
+    .feature-item h3 {
+      color:#ffc220;
+      margin-bottom: 12px;
+      font-size: 1.2rem;
+    }
+
+    .feature-item p {
+      color:#eee;
+      font-size: 0.95rem;
+    }
+
+    .feature-item i {
+      color: #ffc220;
+      font-size: 1.5rem;
+      margin-right: 8px;
+    }
+
+    .marketplace-section {
+  position: relative;
+  padding: 80px 20px;
+  background: rgba(0, 68, 148, 0.85);
+  text-align: center;
+  overflow: hidden;
+}
+
+.marketplace-bg {
+  background: url('https://cdn.pixabay.com/photo/2017/08/10/03/28/shopping-2616824_1280.png') no-repeat center;
+  background-size: contain;
+  opacity: 0.05;
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.marketplace-content {
+  position: relative;
+  z-index: 1;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 40px;
+  border-radius: 20px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+}
+
+.marketplace-content h2 {
+  font-size: 2.5rem;
+  color: #ffc220;
+  margin-bottom: 20px;
+  text-shadow: 0 0 10px #002f6c;
+}
+
+.marketplace-content p {
+  font-size: 1.1rem;
+  color: #eee;
+  margin-bottom: 30px;
+}
+
+.marketplace-content a {
+  padding: 14px 30px;
+  background: #ffc220;
+  color: #002f6c;
+  font-weight: bold;
+  font-size: 1.1rem;
+  text-decoration: none;
+  border-radius: 30px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+  transition: background 0.3s, transform 0.3s;
+}
+
+.marketplace-content a:hover {
+  background: #ffb700;
+  transform: scale(1.05);
+}
+
+.marketplace-content i {
+  margin-right: 8px;
+}
+
+
+    footer {
+      background:#002f6c;
+      text-align:center;
+      padding:20px;
+      font-size:0.9rem;
+    }
+
+    @media (max-width:768px) {
+      .hero h1 { font-size:2.5rem; }
+      .feature-grid { flex-direction:column; align-items:center; }
+      header { flex-direction:column; }
+      header nav { margin-top:10px; }
+    }
+  </style>
+</head>
+<body>
+   
+  <header>
+    <img src="{{ url_for('static', filename='logo.png') }}" alt="Walmart Logo">
+    <nav>
+      <a href="/marketplace">Marketplace</a>
+      <a href="/dashboard">Dashboard</a>
+      <a href="/login">Login</a>
+    </nav>
+  </header>
+   <div id="bg-waves"></div>
+
+  <section class="hero">
+    <div class="hero-content">
+      <div class="hero-text">
+        <h1>Welcome to HyperLoop</h1>
+        <p>Blockchain-powered Sustainability Exchange for Smarter, Greener Retail</p>
+        <div class="buttons">
+          <a href="/login">Login to Continue</a>
+        </div>
+      </div>
+      <div class="hero-logo">
+        <img src="{{ url_for('static', filename='logo.png') }}" alt="Walmart Logo">
+      </div>
+    </div>
+  </section>
+
+  <section class="features">
+    <h2>Platform Features</h2>
+    <div class="feature-grid">
+      <div class="feature-item tilt">
+        <h3><i class="fas fa-exchange-alt"></i> Decentralized Trading</h3>
+        <p>Store-to-store surplus trading powered by blockchain smart contracts.</p>
+      </div>
+      <div class="feature-item tilt">
+        <h3><i class="fas fa-brain"></i> AI-Powered Matching</h3>
+        <p>Forecast surplus and match demand using real-time ML models.</p>
+      </div>
+      <div class="feature-item tilt">
+        <h3><i class="fas fa-leaf"></i> EcoCredit Incentives</h3>
+        <p>Earn green tokens for every low‑waste transaction you complete.</p>
+      </div>
+      <div class="feature-item tilt">
+        <h3><i class="fas fa-truck"></i> Sustainable Logistics</h3>
+        <p>Delivery route optimization for carbon-efficient distribution.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="marketplace-section">
+  <div class="marketplace-bg"></div>
+  <div class="marketplace-content">
+    <h2><i class="fas fa-store"></i> Visit the Marketplace</h2>
+    <p>Explore surplus items from Walmart stores and claim what your store needs.</p>
+    <a href="/marketplace"><i class="fas fa-arrow-circle-right"></i> Go to Marketplace</a>
+  </div>
+</section>
+
+  <footer>
+    © 2025 LocalLoop by Walmart | Designed for a Zero‑Waste Future
+  </footer>
+
+  <!-- Vanilla Tilt for interactive hover effect -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.7.2/vanilla-tilt.min.js"></script>
+  <script>
+    VanillaTilt.init(document.querySelectorAll(".tilt"), {
+      max: 10,
+      speed: 400,
+      glare: true,
+      "max-glare": 0.2
+    });
+  </script>
+</body>
+</html>

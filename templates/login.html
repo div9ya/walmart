@@ -1,37 +1,156 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Walmart Store Login</title>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Open Sans', sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #001E60, #003087);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      color: #fff;
+    }
+
+    .container {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+      padding: 40px;
+      width: 90%;
+      max-width: 420px;
+      border-radius: 15px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+      text-align: center;
+    }
+
+    .logo {
+      width: 90px;
+      margin-bottom: 20px;
+    }
+
+    h2 {
+      margin-bottom: 20px;
+      font-size: 1.8rem;
+      color: #ffc220;
+      text-shadow: 0 0 10px #003087;
+    }
+
+    form {
+      text-align: left;
+    }
+
+    label {
+      font-weight: 600;
+      margin-top: 15px;
+      display: block;
+      color: #fff;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="password"] {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      margin-bottom: 15px;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+      outline: none;
+    }
+
+    input::placeholder {
+      color: #ccc;
+    }
+
+    button {
+      width: 100%;
+      background-color: #ffc220;
+      color: #002f6c;
+      padding: 12px;
+      border: none;
+      border-radius: 30px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #ffb700;
+      transform: scale(1.03);
+    }
+
+    .flash-message {
+      padding: 10px;
+      margin-bottom: 15px;
+      border-radius: 6px;
+      font-weight: bold;
+    }
+
+    .flash-message.danger {
+      background-color: #ffe5e5;
+      color: #d8000c;
+    }
+
+    .flash-message.success {
+      background-color: #e6ffed;
+      color: #2e7d32;
+    }
+
+    .flash-message.info {
+      background-color: #e7f3fe;
+      color: #2176bd;
+    }
+
+    @media (max-width: 480px) {
+      .container {
+        padding: 30px 20px;
+      }
+    }
+  </style>
 </head>
 <body>
+
+  <div class="container">
+    <img src="../static/logo.png" alt="Walmart Logo" class="logo" />
     <h2>Walmart Store Login</h2>
 
     {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            {% for category, message in messages %}
-                <div class="flash-message" style="color: 
-                    {% if category == 'danger' %}red
-                    {% elif category == 'success' %}green
-                    {% else %}blue{% endif %};">
-                    {{ message }}
-                </div>
-            {% endfor %}
-        {% endif %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="flash-message {{ category }}">
+            {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
     {% endwith %}
 
     <form method="POST">
-        <label for="store_id">Store ID:</label><br>
-        <input type="text" name="store_id" id="store_id" required><br>
+      <label for="store_id">Store ID:</label>
+      <input type="text" name="store_id" id="store_id" placeholder="Enter Store ID" required>
 
-        <label for="email">Manager Email:</label><br>
-        <input type="email" name="email" id="email" required><br>
+      <label for="email">Manager Email:</label>
+      <input type="email" name="email" id="email" placeholder="Enter Email" required>
 
-        <label for="pass">Password:</label><br>
-        <input type="password" name="pass" id="pass" required><br>
+      <label for="pass">Password:</label>
+      <input type="password" name="pass" id="pass" placeholder="Enter Password" required>
 
-        <button type="submit">Login</button>
+      <button type="submit">Login</button>
     </form>
+  </div>
+
 </body>
 </html>

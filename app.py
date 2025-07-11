@@ -10,12 +10,15 @@ from flask import Flask, request, jsonify, render_template
 from pymongo import MongoClient
 from collections import defaultdict
 from bson.objectid import ObjectId
+from dotenv import load_dotenv
+load_dotenv()
+
 pipe=pickle.load(open("pipe.pkl",'rb'))
 app = Flask(__name__)
 app.secret_key = 'supersecretkey'
 
 # MongoDB connection
-client = MongoClient("mongodb://localhost:27017/")
+client = MongoClient(os.getenv("MONGO_URI"))
 db = client["walmart"]
 stores_col = db["walmart_detail"]
 all_items = db.inventory.find()
@@ -36,6 +39,9 @@ for item in all_items:
             db.less_inventory.replace_one({'_id': item['_id']}, item)
         else:
             db.less_inventory.insert_one(item)
+@app.route('/')
+def home():
+    return render_template('home.html')
 
 @app.route('/get_less_stores')
 def get_less_stores():
@@ -122,32 +128,78 @@ def dashboard():
     
     store_id = session['store_id']
     region = session['region']
+    today = datetime.today()
 
-    # Get inventory items for the logged-in store
-    inventory_items = db["inventory"].find({"store_id": store_id})
-    
+    # 🔄 Get inventory for current store
+    inventory_items = list(db["inventory"].find({"store_id": store_id}))
 
+    # 🥧 Surplus pie chart data
     surplus_items = list(db.surplus_inventory.find({'store_id': store_id}))
-
     labels = [item['product_name'] for item in surplus_items]
     sizes = [item['surplus_kg'] for item in surplus_items]
 
-    # Only generate chart if there are items
+    # 🖼 Generate pie chart if data exists
     if labels and sizes:
         fig, ax = plt.subplots()
         ax.pie(sizes, labels=labels, autopct='%1.1f%%', startangle=90)
-        ax.axis('equal')  # Equal aspect ratio ensures the pie chart is circular.
-
+        ax.axis('equal')
         chart_path = os.path.join('static', 'surplus_pie.png')
         plt.savefig(chart_path)
         plt.close()
     else:
         chart_path = None
 
-    return render_template("dashboard.html", 
-                           store_id=store_id, 
-                           region=region,
-                           inventory=inventory_items,chart_path=chart_path)
+    # 🥇 Top 5 products by quantity
+    top_products = sorted(inventory_items, key=lambda x: x.get('quantity_kg', 0), reverse=True)[:5]
+
+    # 📊 Predicted daily sales bar chart
+    predicted_sales_chart = [
+        (item['product_name'], item.get('predicted_daily_sale_kg', 0)) for item in top_products
+    ]
+
+    # ⏰ Items expiring in ≤ 5 days
+    expiring_soon = []
+    for item in inventory_items:
+        try:
+            expiry = datetime.strptime(item['expiry_date'], "%Y-%m-%d")
+            if (expiry - today).days <= 5:
+                expiring_soon.append(item)
+        except:
+            continue
+    # Grouped Bar Chart: Stock vs Surplus
+    stock_vs_surplus_labels = []
+    stock_data = []
+    surplus_data = []
+
+    for item in inventory_items:
+        stock_vs_surplus_labels.append(item['product_name'])
+        stock_data.append(item.get('quantity_kg', 0))
+        surplus_data.append(item.get('surplus_kg', 0))
+
+       # 📊 Inventory Composition by Category
+    category_map = {}
+    for item in inventory_items:
+        cat = item.get('category', 'Unknown')
+        qty = item.get('quantity_kg', 0)
+        category_map[cat] = category_map.get(cat, 0) + qty
+
+    category_labels = list(category_map.keys())
+    category_values = list(category_map.values())
+    return render_template(
+        "dashboard.html",
+        store_id=store_id,
+        region=region,
+        inventory=inventory_items,
+        chart_path=chart_path,
+        stock_vs_surplus_labels=stock_vs_surplus_labels,
+        stock_data=stock_data,
+        surplus_data=surplus_data,
+        top_products=top_products,
+        predicted_sales_chart=predicted_sales_chart,
+        expiring_soon=expiring_soon,
+        category_labels=category_labels,
+        category_values=category_values
+    )
 
 @app.route('/active-requests')
 def active_requests():
@@ -283,8 +335,26 @@ def update_request():
                 db.less_inventory.delete_one({"_id": to_item["_id"]})
 
         else:
-            new_id = f"inv_{str(len(list(db.inventory.find())) + 1).zfill(3)}"
-            new_item = {
+                new_id = f"inv_{str(len(list(db.inventory.find())) + 1).zfill(3)}"
+    
+                # Dummy values – ideally fetched from store or request data
+                local_event = 0
+                temperature = 25.0
+                rainfall = 0.0
+    
+                predicted_sales = predict_sale(
+                pipe,
+                region=req['region'],
+                product_name=req['product_name'],
+                quantity_kg=quantity,
+                unit_price=req['unit_price'],
+                expiry_date=req['expiry_date'],
+                local_event=local_event,
+                temperature=temperature,
+                rainfall=rainfall
+                )
+
+                new_item = {
                 "_id": new_id,
                 "store_id": to_store,
                 "product_name": req['product_name'],
@@ -292,14 +362,18 @@ def update_request():
                 "quantity_kg": quantity,
                 "unit_price": req['unit_price'],
                 "expiry_date": req['expiry_date'],
-                "predicted_daily_sale_kg": req['predicted_daily_sale_kg'],
+                "predicted_daily_sale_kg": float(predicted_sales[0]),
                 "region": req['region'],
                 "date_added": datetime.now().strftime("%Y-%m-%d"),
                 "status": "adequate",
                 "less_kg": 0,
-                "surplus_kg": 0
-            }
-            db.inventory.insert_one(new_item)
+                "surplus_kg": 0,
+                "local_event": local_event,
+                "temperature": temperature,
+                "rainfall": rainfall
+                }
+                db.inventory.insert_one(new_item)
+
 
         flash("Transfer completed and inventory updated.", "success")
     else:
@@ -382,7 +456,6 @@ def predict_sale(pipe,region,product_name,quantity_kg,unit_price,expiry_date,loc
             'rainfall': rainfall
         }])
         return pipe.predict(query)
-
 
 
 
