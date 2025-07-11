@@ -5,3 +5,4 @@ matplotlib
 pandas
 scikit-learn==1.6.1
 xgboost==2.0.3
+gunicorn
