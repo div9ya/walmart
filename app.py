@@ -3,6 +3,7 @@ from pymongo import MongoClient
 import matplotlib.pyplot as plt
 import os
 import sklearn
+import xgboost
 import pickle
 import numpy as np
 import pandas as pd
@@ -14,7 +15,7 @@ from bson.objectid import ObjectId
 from dotenv import load_dotenv
 load_dotenv()
 
-pipe=pickle.load(open("pipe.pkl",'rb'))
+pipe=pickle.load(open("pipeline_new.pkl",'rb'))
 app = Flask(__name__)
 app.secret_key = 'supersecretkey'
 
